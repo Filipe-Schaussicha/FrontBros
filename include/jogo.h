@@ -1,0 +1,1 @@
+void fase_1(GameOpt *opcoes);

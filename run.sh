@@ -4,10 +4,11 @@ source /home/filipe/Documentos/Programas/emsdk/emsdk_env.sh
 
 echo "Emsdk pronto!"
 
-emcc src/main.c \
+emcc src/*.c \
     raylib/lib/libraylib.a \
     -o frontBros.html \
     -Os -Wall \
+    -Iinclude \
     -Iraylib/include \
     -s USE_GLFW=3 \
     -DPLATFORM_WEB \

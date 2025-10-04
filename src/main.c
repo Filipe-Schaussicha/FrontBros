@@ -5,11 +5,12 @@
 
 #include "raylib.h"
 #include <emscripten/emscripten.h>
-
-#define SW 1280
-#define SH 720
+#include "commun.h"
+#include "jogo.h"
 
 void desenharFrame();
+
+GameOpt opcoes = {FASE_1, MURILO};
 
 int main() {
     
@@ -27,6 +28,13 @@ void desenharFrame(){
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
+    switch(opcoes.tela){
+
+        case FASE_1:
+            fase_1(&opcoes);
+            break;
         
+    }
+    
     EndDrawing();
 }
