@@ -3,38 +3,83 @@
     https://github.com/raysan5/raylib/blob/d97e0a8ac7ac150585e697344bf625e1583fe91c/examples/core/core_basic_window_web.c
 */
 
+#include "commun.h"
+#include <math.h>
+#include <stdio.h>
 #include "raylib.h"
 #include <emscripten/emscripten.h>
-#include "commun.h"
-#include "jogo.h"
+#include "menu.h"
 
-void desenharFrame();
+GameOpt opcoes = {MENU, 0};
 
-GameOpt opcoes = {FASE_1, MURILO};
+static RenderTexture2D target;
+
+void desenharFrame(){
+
+    // calcula escala para manter 16:9 dentro do canvas atual
+    float screenW = (float)GetScreenWidth();
+    float screenH = (float)GetScreenHeight();
+
+    float scale = fminf(screenW / (float)VW, screenH / (float)VH);
+
+    int scaledW = (int)(VW * scale);
+    int scaledH = (int)(VH * scale);
+    int offsetX = (int)((screenW - scaledW) / 2.0f);
+    int offsetY = (int)((screenH - scaledH) / 2.0f);
+
+    //---------------------------------------------------------------------
+
+    char buffer[1000];
+
+    sprintf(buffer, "Tamanho da tela: %.0f por %.0f", screenW, screenH);
+
+    BeginTextureMode(target);
+        ClearBackground(RAYWHITE);
+
+        DrawText(buffer, 200, 320, 40, RED);
+
+        switch(opcoes.tela){
+            case MENU:
+            menu(&opcoes);
+            break;
+        
+        }
+
+        // ... restante do seu draw ...
+    EndTextureMode();
+
+    //---------------------------------------------------------------------
+
+    BeginDrawing();
+    ClearBackground(BLACK);
+
+    // desenha a render texture escalada e centralizada
+    DrawTexturePro(
+        target.texture,
+        (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, -(float)target.texture.height }, // origem (invertendo Y)
+        (Rectangle){ (float)offsetX, (float)offsetY, (float)scaledW, (float)scaledH },      // destino
+        (Vector2){ 0.0f, 0.0f },
+        0.0f,
+        WHITE
+    );
+    
+    
+    EndDrawing();
+}
+
 
 int main() {
     
-    InitWindow(SW, SH, "FrontEnd Bros.");
+    InitWindow(1280, 720, "FrontEnd Bros.");
     SetTargetFPS(60);
+
+    target = LoadRenderTexture(VW, VH);
+    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
     emscripten_set_main_loop(desenharFrame, 0, 1);
 
+    UnloadRenderTexture(target);
     CloseWindow();
     return 0;
 }
 
-void desenharFrame(){
-
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
-
-    switch(opcoes.tela){
-
-        case FASE_1:
-            fase_1(&opcoes);
-            break;
-        
-    }
-    
-    EndDrawing();
-}
