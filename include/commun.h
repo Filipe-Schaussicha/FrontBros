@@ -1,4 +1,3 @@
-
 #define VW 1280
 #define VH 720
 

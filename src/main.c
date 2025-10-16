@@ -29,14 +29,9 @@ void desenharFrame(){
 
     //---------------------------------------------------------------------
 
-    char buffer[1000];
-
-    sprintf(buffer, "Tamanho da tela: %.0f por %.0f", screenW, screenH);
-
     BeginTextureMode(target);
         ClearBackground(RAYWHITE);
 
-        DrawText(buffer, 200, 320, 40, RED);
 
         switch(opcoes.tela){
             case MENU:
